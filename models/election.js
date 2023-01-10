@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const admin = require('./admin');
 module.exports = (sequelize, DataTypes) => {
   class election extends Model {
     /**
@@ -10,13 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      election.belongsTo(models.Admin,{
+        foreignKey:'AdminId'
+      })
       // define association here
     }
-    static addElection({ electionName }) {
+    static addElection({ electionName,AdminId }) {
       console.log("bjhbvhzdczv")
       return this.create({
         electionName:electionName,
         electionStatus:false,
+        AdminId:AdminId
+
         
       });
     }
@@ -29,8 +35,13 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static getElection(){
-      return election.findAll();
+    static getElection(AdminId){
+      return election.findAll(
+        {where:{
+          AdminId
+        }}
+      );
+
     }
 
   }
@@ -46,6 +57,5 @@ module.exports = (sequelize, DataTypes) => {
 
  
   return election;
-
  
 };

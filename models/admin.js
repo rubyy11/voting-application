@@ -10,15 +10,41 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Admin.hasMany(models.election,{
+        foreignKey:'AdminId',
+      })
       // define association here
     }
   }
   Admin.init({
-    fname: DataTypes.STRING,
+    fname: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: true,
+        len: {
+          args: 1,
+          msg: "Proper first name required!",
+        },
+      },
+    },
     lname: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
-  }, {
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        args: true,
+        msg: "Email already exists",
+      },
+    },
+
+    password:{
+        type: DataTypes.STRING,
+        allowNull: false,
+  },
+},
+   
+  {
     sequelize,
     modelName: 'Admin',
   });

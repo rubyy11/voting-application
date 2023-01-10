@@ -118,8 +118,8 @@ app.get("/", async (request, response) => {
     console.log("PASSWORD IS", hashedPwd);
     try {
       const user = await Admin.create({
-        fName: request.body.firstName,
-        lName: request.body.lastName,
+        fname: request.body.fname,
+        lname: request.body.lname,
         email: request.body.email,
         password: hashedPwd,
       });
@@ -138,8 +138,10 @@ app.get("/", async (request, response) => {
 
 
   app.get("/elections", async (request, response) => {
+    console.log("wwwwwwwwwwwwwwwwwwwww",request.user.id)
     
-  const allElection =await election.getElection()
+  const allElection =await election.getElection(request.user.id)
+  console.log("rrrrrrrrrrrrrrrrrrrrrr",allElection)
     response.render("election",{allElection})
   });
 
@@ -149,7 +151,8 @@ app.get("/", async (request, response) => {
     async function (request, response) {
       try {
         await election.addElection({
-            electionName:request.body.name
+            electionName:request.body.name,
+            AdminId:request.user.id
         })
 
         return response.redirect("/elections")
