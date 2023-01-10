@@ -20,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         
       });
     }
+//deleteing an election
+    static async remove(id) {
+      return await this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
 
     static getElection(){
       return election.findAll();

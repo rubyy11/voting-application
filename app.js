@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-var csrf = require("tiny-csrf");
+//var csrf = require("tiny-csrf");
 var cookieParser = require("cookie-parser");
 const { election, Admin,option,question,voters } = require("./models");
 const bodyParser = require("body-parser");
@@ -18,7 +18,7 @@ app.use(cookieParser("hi hello"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+//app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 app.use(
     session({
       secret: "my-super-secret-key-65387687",
@@ -28,10 +28,10 @@ app.use(
     })
   );
 
-  app.use(function (request, response, next) {
-    response.locals.messages = request.flash();
-    next();
-  });
+  // app.use(function (request, response, next) {
+  //   response.locals.messages = request.flash();
+  //   next();
+  // });
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -85,7 +85,7 @@ app.get("/", async (request, response) => {
     
       response.render("signup", {
         title: "Signup",
- //       csrfToken: request.csrfToken(),
+      // csrfToken: request.csrfToken(),
       });
     }
   );
@@ -95,7 +95,7 @@ app.get("/", async (request, response) => {
     } else {
       response.render("login", {
         title: "login",
- //       csrfToken:request.csrfToken()
+      //  csrfToken:request.csrfToken(),
       });
     }
   });
@@ -109,7 +109,6 @@ app.get("/", async (request, response) => {
       failureFlash: true,
     }),
     (request, response) => {
-      //console.log(request.user);
       response.redirect("/elections");
     }
   );
@@ -124,7 +123,6 @@ app.get("/", async (request, response) => {
         email: request.body.email,
         password: hashedPwd,
       });
-      console.log("11111111111111")
       request.login(user, (err) => {
         if (err) {
           console.log(err);
@@ -202,7 +200,19 @@ app.get("/", async (request, response) => {
         });
       });
 
-    
+      // deleting electionnn...
+      app.delete(
+        "/elections/:id",
+        connectEnsureLogin.ensureLoggedIn(),
+        async (request, response) => {
+          try {
+             await election.remove(request.params.id);
+            return response.json({ success: true });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      );
 
 
 
