@@ -12,14 +12,11 @@ const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const flash = require("connect-flash");
-
-
 app.set("views", path.join(__dirname, "views"));
 app.use(flash());
+app.use(cookieParser("hi hello"));
 app.set("view engine", "ejs");
-
 app.use(express.urlencoded({ extended: false }));
-
 app.use(bodyParser.json());
 
 app.use(
@@ -31,7 +28,12 @@ app.use(
     })
   );
 
-  app.use(passport.initialize());
+  app.use(function (request, response, next) {
+    response.locals.messages = request.flash();
+    next();
+  });
+
+app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
@@ -83,21 +85,23 @@ app.get("/", async (request, response) => {
     
       response.render("signup", {
         title: "Signup",
-        //csrfToken: request.csrfToken(),
+ //       csrfToken: request.csrfToken(),
       });
     }
   );
   app.get("/login", (request, response) => {
-    if (request.user != undefined) {
-      response.redirect("/login");
+    if (request.user && request.user.isAdmin) {
+      response.redirect("/elections");
     } else {
       response.render("login", {
         title: "login",
+ //       csrfToken:request.csrfToken()
       });
     }
   });
 
   //sign in to next page
+  app.use(express.static(path.join(__dirname, "public")));
   app.post(
     "/session",
     passport.authenticate("local", {
@@ -105,7 +109,7 @@ app.get("/", async (request, response) => {
       failureFlash: true,
     }),
     (request, response) => {
-      console.log(request.user);
+      //console.log(request.user);
       response.redirect("/elections");
     }
   );
@@ -118,21 +122,20 @@ app.get("/", async (request, response) => {
         fName: request.body.firstName,
         lName: request.body.lastName,
         email: request.body.email,
-        password: request.body.password,
+        password: hashedPwd,
       });
       console.log("11111111111111")
       request.login(user, (err) => {
         if (err) {
           console.log(err);
         }
-         response.redirect("/election");
+         response.redirect("/elections");
       });
     } catch (error) {
       console.log(error);
-      }
       response.redirect("/signup");
     }
-  );
+  });
 
 
 
@@ -151,7 +154,7 @@ app.get("/", async (request, response) => {
             electionName:request.body.name
         })
 
-        return response.render("electionpage")
+        return response.redirect("/elections")
     }
     catch(error){
         console.log(error);
