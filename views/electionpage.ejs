@@ -4,41 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.tailwindcss.com">
         var token = document
             .querySelector('meta[name="csrf-token"]')
             .getAttribute("content")
 
-        // function startElection(id){
-        //     fetch(`/elections/${id}/start`, {
-        //         method: "put",
-        //         headers: { "Content-Type": "application/json" },
-        //         body: JSON.stringify({
-        //             "_csrf": token
-        //         })
-        //     })
-        //         .then((res) => {
-        //             if (res.ok) {
-        //                 window.location.reload();
-        //             }
-        //         })
-        //         .catch((err) => console.log(err));
-        // }
-        function endElection(id){
-            fetch(`/elections/${id}/end`, {
-                method: "put",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "_csrf": token
-                })
-            })
-                .then((res) => {
-                    if (res.ok) {
-                        window.location.replace(`/elections/${id}/results`);
-                    }
-                })
-                .catch((err) => console.log(err));
-        }
 // deleting elections function...
         function deleteElection(id){
             fetch(`/elections/${id}`, {
@@ -60,34 +31,50 @@
 </head>
 <body>
     <div>
-        <a href="/">home</a> > <a href="/elections">elections</a> > <a href="/elections/<%=id%>"><%=electionName%></a>
+        <a href="/" class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400 hover:bg-orange-800 ">HOME</a> > 
+        <a href="/elections" class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400 hover:bg-orange-800 ">ELECTIONS</a> > 
+        <a href="/elections/<%=id%>" class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400 hover:bg-orange-800 "><%=electionName%></a>>
+        <a href="/signout" class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400 hover:bg-orange-800 "><button>SignOut</button></a>
       </div>
+      <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+        
     <%- include('header.ejs') %>
-    <a href="/signout"><button>SignOut</button></a>
-
-    <h3><a href="/elections/<%=id%>"><%=electionName%></a></h3>
-    <h4>There are <span class="special"><%=quesCount%></span> questions in the ballet of this election</h4>
+    <br>
+    <h3 class="text-black font-medium text-2xl"><a href="/elections/<%=id%>"><%=electionName%></a></h3>
+    <br>
+    <h4 class="font-medium">There are <span class="special"><%=quesCount%></span> questions in the ballet of this election</h4>
+    <br>
     <% if (! electionStatus){%>
-        <a href="/elections/<%=id%>/questions"><button>Manage your questions</button></a>
+        <a href="/elections/<%=id%>/questions" class="px-2 py-1.5 text-white font-medium rounded bg-orange-400  hover:bg-orange-800 "><button>Manage your questions</button></a>
+        <br>
     <%}else{%>
+        <br>
         <p>election running at:</p>
         <a id="vote" href="/elections/<%=id%>/vote" class="special">/elections/<%=id%>/vote</a>
         <%}%>
-    <h4>There are currently <span class="special"><%=voterCount%></span> voters assigned for this election</h4>
-    <a href="/elections/<%=id%>/voters"><button>Manage voters</button></a>
+        <br>
+    <h4 class="font-medium">There are currently <span class="special"><%=voterCount%></span> voters assigned for this election</h4>
+    <br>
+    <a href="/elections/<%=id%>/voters" class="px-2 py-1.5 text-white font-medium rounded bg-orange-400  hover:bg-orange-800 "><button>Manage voters</button></a>
+    <br>
     <div>
         <%if(!electionStatus){%>
-            <a href="/elections/<%=id%>/electionPreview"><button>Preview Election</button></a>
-            
+            <br>
+            <a href="/elections/<%=id%>/electionPreview" class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400  hover:bg-orange-800 "><button>Preview Election</button></a>
+            <br>
             <%}else{%>
-                <button onclick="endElection(<%=id%>)">End Election</button>
+                <br>
+                <button onclick="endElection(<%=id%>)"class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400  hover:bg-orange-800 ">End Election</button>
         <%}%>
-
-        <button onclick="deleteElection(<%=id%>)">Delete</button><br>
+<br>
+        <button onclick="deleteElection(<%=id%>)"class="px-0.5 py-0.5 text-white font-medium rounded bg-orange-400  hover:bg-orange-800 ">Delete Election</button><br>
         <%if(electionStatus){%>
             <a href="/elections/<%=id%>/results"><button>Results</button></a>
         <%}%>
     </div>
+        </div>
+        </div>
 
     <script>
         const vote=document.getElementById("vote")

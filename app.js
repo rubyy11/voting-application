@@ -138,10 +138,10 @@ app.get("/", async (request, response) => {
 
 
   app.get("/elections", async (request, response) => {
-    console.log("wwwwwwwwwwwwwwwwwwwww",request.user.id)
-    
-  const allElection =await election.getElection(request.user.id)
-  console.log("rrrrrrrrrrrrrrrrrrrrrr",allElection)
+    //console.log("wwwwwwwwwwwwwwwwwwwww",request.user.id)
+  const uid=request.user.id;  
+  const allElection =await election.getElection(uid)
+  //console.log("rrrrrrrrrrrrrrrrrrrrrr",allElection)
     response.render("election",{allElection})
   });
 
@@ -193,6 +193,25 @@ app.get("/", async (request, response) => {
           }
         }
       );
+
+      //manage question page
+      app.get("/elections/:id/questions",
+      connectEnsureLogin.ensureLoggedIn(),
+      async(request,response)=>{
+        const questionList= await question.getquestions(request.params.id);
+        response.render("questions",{
+          qid:request.params.id,
+          questionList
+        })
+
+      })
+
+
+
+
+
+
+
       
       app.get("/signout", (request, response, next) => {
         request.logout((err) => {

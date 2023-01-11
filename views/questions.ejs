@@ -11,15 +11,15 @@
 <body>
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
-            <h3 class="py-4 text-orange-900 underline">ELECTION</h3>
-            <h3 class="py-4 text-orange-900 underline">create Election</h1>
-                <form action="/elections" method="post">
+            <h3 class="py-4 text-orange-900 underline">Questions</h3>
+            <h3 class="py-4 text-orange-900 underline">create questions</h1>
+                <form form action="/elections/<%=id%>/questions " method="post">
                     <input type="text" class="placeholder-orange-500 border border-orange-500 border-opacity-75"  placeholder="Add new election" name="name">
                     <button type="submit" class="text-white bg-orange-400 hover:bg-orange-800 font-medium rounded px-2 py-1.5">Submit</button>
                 </form>
-            <% for(let i=0;i<allElection.length;i++){%>
-            <a href="/election/<%= allElection[i].id%>">
-            <%= allElection[i].electionName%>
+            <% for(let i=0;i<questionList.length;i++){%>
+            <a href="/election/<%= questionList[i].id%>">
+            <%= questionList[i].electionName%>
             </a>
             <br>
             <%} %> 
